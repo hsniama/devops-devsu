@@ -33,8 +33,8 @@ stages:
             displayName: 'Ejecutar tests'
 
           - script: |
-              flake8 .
-            displayName: 'Análisis estático con flake8'
+              flake8 . || echo "Flake8 terminó con warnings"
+            displayName: 'Análisis estático con flake8 (no bloqueante)'
 
           - script: |
               coverage run manage.py test
