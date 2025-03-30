@@ -13,7 +13,7 @@ This is a simple application to be used in the technical test of DevOps.
 Clone this repo.
 
 ```bash
-git clone https://bitbucket.org/devsu/demo-devops-python.git
+git clone "tu repositorio"
 ```
 
 Install dependencies.
