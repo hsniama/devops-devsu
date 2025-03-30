@@ -1,0 +1,57 @@
+trigger:
+  branches:
+    include:
+      - dev
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  pythonVersion: '3.11'
+  imageName: 'devops-django'
+  dockerRegistryServiceConnection: 'acr-connection-henry'  # nombre de tu conexión a ACR
+  containerRegistry: 'devopsregistryhenry.azurecr.io'       # tu nombre real de ACR
+  tag: '$(Build.BuildId)'
+
+stages:
+  - stage: BuildAndTest
+    jobs:
+      - job: DjangoTests
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '$(pythonVersion)'
+
+          - script: |
+              python -m pip install --upgrade pip
+              pip install -r requirements.txt
+              pip install flake8 coverage
+            displayName: 'Instalar dependencias y herramientas de análisis'
+
+          - script: |
+              python manage.py test
+            displayName: 'Ejecutar tests'
+
+          - script: |
+              flake8 .
+            displayName: 'Análisis estático con flake8'
+
+          - script: |
+              coverage run manage.py test
+              coverage report
+            displayName: 'Medir cobertura de código'
+
+  - stage: BuildAndPushImage
+    dependsOn: BuildAndTest
+    jobs:
+      - job: DockerBuild
+        steps:
+          - task: Docker@2
+            inputs:
+              containerRegistry: $(dockerRegistryServiceConnection)
+              repository: $(imageName)
+              command: buildAndPush
+              Dockerfile: '**/Dockerfile'
+              tags: |
+                $(tag)
+                latest
