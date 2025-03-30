@@ -9,8 +9,8 @@ pool:
 variables:
   pythonVersion: '3.11'
   imageName: 'devops-django'
-  dockerRegistryServiceConnection: 'acr-connection-henry'  # nombre de tu conexión a ACR
-  containerRegistry: 'devopsregistryhenry.azurecr.io'       # tu nombre real de ACR
+  dockerRegistryServiceConnection: 'acr-connection-henry'  # nombre de conexión a ACR
+  containerRegistry: 'devopsregistryhenry.azurecr.io'       # nombre de ACR
   tag: '$(Build.BuildId)'
 
 stages:
