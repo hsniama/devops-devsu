@@ -65,19 +65,21 @@ stages:
         pool:
           vmImage: 'ubuntu-latest'
         steps:
-          - checkout: self 
+          - checkout: self
+            clean: true
           - task: Kubernetes@1
             displayName: 'Deploy manifests to AKS'
             inputs:
               connectionType: 'Azure Resource Manager'
-              azureSubscriptionEndpoint: 'aks-arm-connection' # nombre ARM conexión
-              azureResourceGroup: 'devops'                    # grupo del clúster
+              azureSubscriptionEndpoint: 'aks-arm-connection'
+              azureResourceGroup: 'devops'
               kubernetesCluster: 'aks-devops-henry'
               useClusterAdmin: true
               namespace: default
               command: apply
               useConfigurationFile: true
               configuration: |
+                k8s/configmap.yaml
                 k8s/deployment.yaml
                 k8s/service.yaml
                 k8s/ingress.yaml
