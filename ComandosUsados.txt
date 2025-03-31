@@ -1,0 +1,19 @@
+COMANDOS USADOS:
+
+Docker:
+
+# 1. Reconstruir imagen
+docker build -t devops-django .
+
+# 2. Eliminar contenedor viejo (si existe) (No es necesario, ya lo tengo bien creado localmente)
+docker rm -f devops-django || true
+
+# 3. Correr contenedor nuevamente
+docker run -d --name devops-django -p 8000:8000 --env-file .env devops-django
+
+# 4. Entrar ami contenedor
+docker exec -it devops-django sh
+ls /app
+
+# 5. Ver las tablas de la BBDD
+sqlite3 db.sqlite3 ".tables"
