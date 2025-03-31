@@ -10,7 +10,7 @@ RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
 # Copiar archivos del proyecto
 COPY . .
 
-# Cambiar permisos al archivo SQLite si ya existe (por si lo copias)
+# Permisos al archivo SQLite si ya existe
 RUN touch db.sqlite3 && chmod 666 db.sqlite3 || true
 
 # Instalar dependencias del sistema
@@ -28,5 +28,5 @@ EXPOSE 8000
 # Healthcheck
 HEALTHCHECK CMD curl --fail http://localhost:8000/api/health || exit 1
 
-# Comando principal (migraciones + gunicorn)
+# Comando principal con migraciones y gunicorn para producción
 CMD ["sh", "-c", "python manage.py migrate && gunicorn demo.wsgi:application --bind 0.0.0.0:8000"]
