@@ -3,7 +3,7 @@
 ## 🚀 Descripción del Proyecto
 Este proyecto consiste en un microservicio desarrollado con Django REST Framework, dockerizado y desplegado en Azure Kubernetes Service (AKS) utilizando Azure Pipelines como herramienta CI/CD.
 
-El microservicio expone un endpoint `/api/users/` protegido mediante autenticación con API Key y JWT. El contenedor se construye a partir de un `Dockerfile`, se sube a un Azure Container Registry (ACR) y se despliega mediante manifiestos de Kubernetes.
+El microservicio expone un endpoint `/api/users/`. El contenedor se construye a partir de un `Dockerfile`, se sube a un Azure Container Registry (ACR) y se despliega mediante manifiestos de Kubernetes.
 
 ---
 
@@ -27,6 +27,8 @@ Puedes probarla mediante:
 - Terminal:
   ```bash
   curl http://9.169.74.222/api/users/
+
+![Image](https://github.com/user-attachments/assets/b85e285c-8acb-43f3-a766-7e467f7ff064)
 
 ## Pasos para probar el microservicio
 
@@ -65,9 +67,13 @@ kubectl logs -n ingress-nginx -l app.kubernetes.io/name=ingress-nginx
 - ✅ **Azure Pipelines configurado con:**
   - *Build & Test* (unit tests, flake8, coverage)
   - *Docker Build & Push a Azure Container Registry*
-  - *Despliegue a AKS desde pipeline (fallido por YAML multilínea)*
+  - *Despliegue a AKS desde pipeline (fallido por YAML multilínea, se despliega manual con kubectl apply -f k8s/)*
 
 - ✅ **Instalación y uso de NGINX Ingress Controller en AKS**
+
+- ✅ **Configuración en Azure**
+
+![Image](https://github.com/user-attachments/assets/597e0bee-f3aa-44ce-a5c9-69f8cd28e885)
 
 - ✅ **Documentación detallada** en este README.
 
@@ -89,6 +95,7 @@ Se crearon recursos en el portal de Azure para cumplir con los requerimientos:
 - **Versión:** 1.30.10
 - **Nodos:** 1 (Standard_DS2_v2)
 - **Ingress Controller:** instalado
+![Image](https://github.com/user-attachments/assets/4210e6b4-bec8-47d9-8d73-e5bf6e275fd2)
 
 ![Image](https://github.com/user-attachments/assets/107832cf-af25-45c1-a117-8e167b81a00c)
 
