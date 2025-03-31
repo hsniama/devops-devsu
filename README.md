@@ -1,139 +1,201 @@
-# Demo Devops Python
+# DevOps Technical Assessment - Django Microservice
 
-This is a simple application to be used in the technical test of DevOps.
+## 🚀 Descripción del Proyecto
+Este proyecto consiste en un microservicio desarrollado con Django REST Framework, dockerizado y desplegado en Azure Kubernetes Service (AKS) utilizando Azure Pipelines como herramienta CI/CD.
 
-## Getting Started
+El microservicio expone un endpoint `/api/users/` protegido mediante autenticación con API Key y JWT. El contenedor se construye a partir de un `Dockerfile`, se sube a un Azure Container Registry (ACR) y se despliega mediante manifiestos de Kubernetes.
 
-### Prerequisites
+---
 
-- Python 3.11.3
+## 🌐 Repositorio y Pipeline
+- ✨ Repositorio público GitHub: https://github.com/hsniama/devops-devsu
+- ⚡ Azure DevOps Pipeline: https://dev.azure.com/hniamaro/devops-devsu/_build
 
-### Installation
+---
 
-Clone this repo.
+## 🏙️ Despliegue y Pruebas
 
-```bash
-git clone "tu repositorio"
-```
+### 🌐 Endpoint Público
+La aplicación se encuentra desplegada en AKS y expuesta públicamente a través de NGINX Ingress Controller:
 
-Install dependencies.
+**URL pública del endpoint**  
+👉 http://9.169.74.222/api/users/
 
-```bash
-pip install -r requirements.txt
-```
+Puedes probarla mediante:
 
-Migrate database
+- Navegador web  
+- Terminal:
+  ```bash
+  curl http://9.169.74.222/api/users/
 
-```bash
-py manage.py makemigrations
-py manage.py migrate
-```
+## Pasos para probar el microservicio
 
-### Database
-
-The database is generated as a file in the main path when the project is first run, and its name is `db.sqlite3`.
-
-Consider giving access permissions to the file for proper functioning.
-
-## Usage
-
-To run tests you can use this command.
+### 1. Obtener la IP pública del Ingress
 
 ```bash
-py manage.py test
+kubectl get service ingress-nginx-controller -n ingress-nginx
 ```
 
-To run locally the project you can use this command.
-
+### 2. Probar los endpoints (usando IP pública)
 ```bash
-py manage.py runserver
+curl http://<IP_PUBLICA>
+curl http://<IP_PUBLICA>/api/
+curl http://<IP_PUBLICA>/api/users/
 ```
 
-Open http://localhost:8000/api/ with your browser to see the result.
-
-### Features
-
-These services can perform,
-
-#### Create User
-
-To create a user, the endpoint **/api/users/** must be consumed with the following parameters:
-
+### 3. Acceder desde dentro del pod
 ```bash
-  Method: POST
+kubectl get pods
+kubectl exec -it <pod-name> -- curl http://localhost:8000/api/users/
 ```
 
-```json
-{
-    "dni": "dni",
-    "name": "name"
-}
-```
-
-If the response is successful, the service will return an HTTP Status 200 and a message with the following structure:
-
-```json
-{
-    "id": 1,
-    "dni": "dni",
-    "name": "name"
-}
-```
-
-If the response is unsuccessful, we will receive status 400 and the following message:
-
-```json
-{
-    "detail": "error"
-}
-```
-
-#### Get Users
-
-To get all users, the endpoint **/api/users** must be consumed with the following parameters:
-
+### 4. Ver logs del controlador Ingress
 ```bash
-  Method: GET
+kubectl logs -n ingress-nginx -l app.kubernetes.io/name=ingress-nginx
 ```
 
-If the response is successful, the service will return an HTTP Status 200 and a message with the following structure:
+### Elementos realizados por el candidato
 
-```json
-[
-    {
-        "id": 1,
-        "dni": "dni",
-        "name": "name"
-    }
-]
-```
+- ✅ **Dockerización completa de la app**  
+  *(Dockerfile, usuario no root, puerto, variables)*
 
-#### Get User
+- ✅ **Manifiestos Kubernetes**  
+  *(ConfigMap, Deployment, Service, Ingress)*
 
-To get an user, the endpoint **/api/users/<id>** must be consumed with the following parameters:
+- ✅ **Azure Pipelines configurado con:**
+  - *Build & Test* (unit tests, flake8, coverage)
+  - *Docker Build & Push a Azure Container Registry*
+  - *Despliegue a AKS desde pipeline (fallido por YAML multilínea)*
 
+- ✅ **Instalación y uso de NGINX Ingress Controller en AKS**
+
+- ✅ **Documentación detallada** en este README.
+
+
+## ⚠️ Limitaciones encontradas
+
+- ❌ **Despliegue automático de manifiestos**: Falló debido a errores con `kubectl apply` y el uso de `>` o `|` en archivos YAML multilínea.
+- ❌ **Infraestructura como código (Terraform)**: No se logró implementar por falta de tiempo.
+- ✅ **Despliegue manual**: Fue realizado desde CLI y validado correctamente.
+
+## 🏠 Configuraciones en Azure
+
+Se crearon recursos en el portal de Azure para cumplir con los requerimientos:
+
+### Azure Kubernetes Service (AKS)
+- **Nombre:** aks-devops-henry
+- **Ubicación:** East US
+- **Resource Group:** devops
+- **Versión:** 1.30.10
+- **Nodos:** 1 (Standard_DS2_v2)
+- **Ingress Controller:** instalado
+
+![Image](https://github.com/user-attachments/assets/107832cf-af25-45c1-a117-8e167b81a00c)
+
+### Azure Container Registry (ACR)
+- **Nombre:** devopsregistryhenry
+- **Imagen:** devops-django:latest
+
+![Image](https://github.com/user-attachments/assets/9db51f55-9381-4643-aee7-d3d40aaa607e)
+
+### Azure DevOps Connections
+- **acr-connection-henry:** Push a ACR desde pipeline
+- **aks-arm-connection:** Despliegue a AKS (falló por error en YAML)
+
+![Image](https://github.com/user-attachments/assets/b5b711b5-d958-46e8-8bca-1faeb7283c6c)
+
+📷 Se incluyen capturas de pantalla del portal de Azure como evidencia en la entrega final.
+
+
+
+
+## ⚙️ Comandos utilizados
+
+## 🐳 Docker
+
+### Reconstrucción de imagen
 ```bash
-  Method: GET
+docker build -t devops-django .
 ```
 
-If the response is successful, the service will return an HTTP Status 200 and a message with the following structure:
-
-```json
-{
-    "id": 1,
-    "dni": "dni",
-    "name": "name"
-}
+### Eliminar contenedor anterior (opcional)
+```bash
+docker rm -f devops-django || true
 ```
 
-If the user id does not exist, we will receive status 404 and the following message:
-
-```json
-{
-    "detail": "Not found."
-}
+### Ejecutar contenedor local
+```bash
+docker run -d --name devops-django -p 8000:8000 --env-file .env devops-django
 ```
 
-## License
+### Acceder al contenedor y listar archivos en /app
+```bash
+docker exec -it devops-django sh
+ls /app
+```
 
-Copyright © 2023 Devsu. All rights reserved.
+### Ver tablas en la base de datos SQLite
+```bash
+sqlite3 db.sqlite3 ".tables"
+```
+
+### Login y push a ACR
+```bash
+az acr login --name devopsregistryhenry
+docker tag devops-django devopsregistryhenry.azurecr.io/devops-django:latest
+docker push devopsregistryhenry.azurecr.io/devops-django:latest
+```
+
+## ☸️ Kubernetes
+
+
+### Autenticación y suscripción
+```bash
+az login
+az account set --subscription "Azure for Students"
+```
+
+### Obtener credenciales del clúster
+```bash
+az aks get-credentials --resource-group devops --name aks-devops-henry
+kubectl get nodes
+```
+
+### Instalar Ingress Controller
+```bash
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.0/deploy/static/provider/cloud/deploy.yaml
+```
+
+### Verificar pods y servicios
+```bash
+kubectl get pods -n ingress-nginx
+kubectl get svc
+kubectl get pods
+```
+
+### Vincular ACR con AKS
+```bash
+az aks update -n aks-devops-henry -g devops --attach-acr devopsregistryhenry
+```
+
+### Aplicar manifiestos manualmente
+```bash
+kubectl apply -f k8s/
+kubectl apply -f k8s/ingress.yaml
+```
+
+### Eliminar pod para recreación
+```bash
+kubectl delete pod -l app=devops-django
+```
+
+### Diagnóstico desde pod
+```bash
+kubectl exec -it devops-django-<id> -- curl http://localhost:8000/api/users/
+```
+
+### Logs de Ingress y descripción
+```bash
+kubectl describe ingress devops-django-ingress
+kubectl logs -n ingress-nginx -l app.kubernetes.io/name=ingress-nginx
+```
