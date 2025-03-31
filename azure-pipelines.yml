@@ -72,13 +72,13 @@ stages:
             inputs:
               connectionType: 'Azure Resource Manager'
               azureSubscriptionEndpoint: 'aks-arm-connection'
-              azureResourceGroup: 'MC_devops_aks-devops-henry_eastus'
+              azureResourceGroup: 'devops'
               kubernetesCluster: 'aks-devops-henry'
               useClusterAdmin: true
               namespace: default
               command: apply
               useConfigurationFile: true
-              configuration: |
+              configuration: >
                 k8s/configmap.yaml
                 k8s/deployment.yaml
                 k8s/service.yaml
