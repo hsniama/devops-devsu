@@ -55,6 +55,7 @@ stages:
               tags: |
                 $(tag)
                 latest
+                
   - stage: DeployToAKS
     displayName: 'Deploy to AKS'
     dependsOn: BuildAndPushImage
