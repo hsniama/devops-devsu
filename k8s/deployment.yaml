@@ -1,0 +1,31 @@
+# Se usa mi imagen de ACR y 2 réplicas.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devops-django
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: devops-django
+  template:
+    metadata:
+      labels:
+        app: devops-django
+    spec:
+      containers:
+        - name: django
+          image: devopsregistryhenry.azurecr.io/devops-django:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DJANGO_SECRET_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: devops-config
+                  key: DJANGO_SECRET_KEY
+            - name: DEBUG
+              value: "True"
+            - name: DATABASE_NAME
+              value: "db.sqlite3"

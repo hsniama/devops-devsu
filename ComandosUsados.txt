@@ -17,3 +17,65 @@ ls /app
 
 # 5. Ver las tablas de la BBDD
 sqlite3 db.sqlite3 ".tables"
+
+# 6. Reconstrución y subida de imagen nuevamente para que Kubernetes tenga 
+     la nueva imagen corregida con todos los archivos:
+
+docker build -t devops-django .
+az acr login --name devopsregistryhenry
+docker tag devops-django devopsregistryhenry.azurecr.io/devops-django:latest
+docker push devopsregistryhenry.azurecr.io/devops-django:latest
+
+-------------------------------------------------------------------------------
+Kubernetes:
+
+1. Conexion:
+az login
+az account set --subscription "Azure for Students"
+
+az aks get-credentials --resource-group devops --name aks-devops-henry
+kubectl get nodes
+
+2. Creacion de manifiestos. (dierctorio k8s)
+
+3. Instalación del NGINX controlador:
+ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.0/deploy/static/provider/cloud/deploy.yaml
+
+4. Verificacion de que corra:
+kubectl get pods -n ingress-nginx
+kubectl get svc
+kubectl get pods
+
+4.2 Hacer que se autentique AKS con mi ACR
+az aks update -n aks-devops-henry -g devops --attach-acr devopsregistryhenry
+
+4.3 Recreacion de pods:
+kubectl delete pod -l app=devops-django
+
+
+5. Verificacion de IP publica:
+kubectl get service ingress-nginx-controller -n ingress-nginx
+
+6. Aplicacion manual de mis manifiestos:
+kubectl apply -f k8s/
+
+kubectl delete ingress devops-django-ingress
+kubectl apply -f k8s/ingress.yaml
+
+
+deployment.yaml: crea los pods de la app.
+service.yaml: expone los pods internamente.
+configmap.yaml: variables/env config.
+ingress.yaml: expone públicamente la app vía NGINX Ingress.
+
+Si quiero uno en especifico: kubectl apply -f k8s/ingress.yaml
+
+Probar con 
+curl http://9.169.74.222
+curl http://9.169.74.222/api/
+
+7. Diagnosticar el routing
+kubectl get pods
+kubectl exec -it devops-django-56dbc4d84b-gz6p -- curl http://localhost:8000/api/users/
+kubectl describe ingress devops-django-ingress
+kubectl logs -n ingress-nginx -l app.kubernetes.io/name=ingress-nginx

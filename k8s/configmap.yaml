@@ -1,0 +1,8 @@
+# para manejar variables sin meterlas directo en el YAML.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: devops-config
+data:
+  DJANGO_SECRET_KEY: "django-insecure-wc2i2*6^17$9!u+(u66@q_rg)++n1x-^(0-$3yz2f(n=_-o*7="

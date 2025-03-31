@@ -1,0 +1,14 @@
+#Exposicion del contenedor dentro del cluster
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: devops-django-service
+spec:
+  selector:
+    app: devops-django
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+
