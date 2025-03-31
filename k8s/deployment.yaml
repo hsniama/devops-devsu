@@ -5,7 +5,7 @@ kind: Deployment
 metadata:
   name: devops-django
 spec:
-  replicas: 1
+  replicas: 1 #Se pone uno para evitar mayor gasto de dinero, pero se puede poner el 2.
   selector:
     matchLabels:
       app: devops-django
