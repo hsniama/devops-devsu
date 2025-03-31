@@ -55,7 +55,7 @@ stages:
               tags: |
                 $(tag)
                 latest
-                
+
   - stage: DeployToAKS
     displayName: 'Deploy to AKS'
     dependsOn: BuildAndPushImage
@@ -78,7 +78,6 @@ stages:
               command: apply
               useConfigurationFile: true
               configuration: |
-                k8s/configmap.yaml
                 k8s/deployment.yaml
                 k8s/service.yaml
                 k8s/ingress.yaml
