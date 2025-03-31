@@ -56,30 +56,30 @@ stages:
                 $(tag)
                 latest
 
-  - stage: DeployToAKS
-    displayName: 'Deploy to AKS'
-    dependsOn: BuildAndPushImage
-    jobs:
-      - job: Deploy
-        displayName: 'kubectl apply'
-        pool:
-          vmImage: 'ubuntu-latest'
-        steps:
-          - checkout: self
-            clean: true
-          - task: Kubernetes@1
-            displayName: 'Deploy manifests to AKS'
-            inputs:
-              connectionType: 'Azure Resource Manager'
-              azureSubscriptionEndpoint: 'aks-arm-connection'
-              azureResourceGroup: 'devops'
-              kubernetesCluster: 'aks-devops-henry'
-              useClusterAdmin: true
-              namespace: default
-              command: apply
-              useConfigurationFile: true
-              configuration: >
-                k8s/configmap.yaml
-                k8s/deployment.yaml
-                k8s/service.yaml
-                k8s/ingress.yaml
+  # - stage: DeployToAKS
+  #   displayName: 'Deploy to AKS'
+  #   dependsOn: BuildAndPushImage
+  #   jobs:
+  #     - job: Deploy
+  #       displayName: 'kubectl apply'
+  #       pool:
+  #         vmImage: 'ubuntu-latest'
+  #       steps:
+  #         - checkout: self
+  #           clean: true
+  #         - task: Kubernetes@1
+  #           displayName: 'Deploy manifests to AKS'
+  #           inputs:
+  #             connectionType: 'Azure Resource Manager'
+  #             azureSubscriptionEndpoint: 'aks-arm-connection'
+  #             azureResourceGroup: 'devops'
+  #             kubernetesCluster: 'aks-devops-henry'
+  #             useClusterAdmin: true
+  #             namespace: default
+  #             command: apply
+  #             useConfigurationFile: true
+  #             configuration: >
+  #               k8s/configmap.yaml
+  #               k8s/deployment.yaml
+  #               k8s/service.yaml
+  #               k8s/ingress.yaml
