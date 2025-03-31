@@ -78,9 +78,10 @@ stages:
               namespace: default
               command: apply
               useConfigurationFile: true
-              configuration: |
+              configuration: >
                 k8s/configmap.yaml
                 k8s/deployment.yaml
                 k8s/service.yaml
                 k8s/ingress.yaml
+
 
