@@ -56,7 +56,7 @@ kubectl exec -it <pod-name> -- curl http://localhost:8000/api/users/
 kubectl logs -n ingress-nginx -l app.kubernetes.io/name=ingress-nginx
 ```
 
-### Elementos realizados por el candidato
+### Elementos realizados:
 
 - ✅ **Dockerización completa de la app**  
   *(Dockerfile, usuario no root, puerto, variables)*
